@@ -3,14 +3,16 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"services/hello_world"
 )
+
 
 func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	type Response struct {
 		Message string `json:"message"`
 	}
 	response := Response{
-		Message: HelloWorld(),
+		Message: hello_world.HelloWorld(),
 	}
 
 	jsonResponse, err := json.Marshal(response)
