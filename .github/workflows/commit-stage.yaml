@@ -65,10 +65,36 @@ jobs:
         if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
           cd src
-          go build
+          go get .
 
       - name: Unit Testing with Golang testing package
         id: unit_test
         run: |
           cd src
           go test ./...
+
+  analyze:
+    runs-on: ubuntu-22.04
+    needs: build
+    name: Static Analysis
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------- Static Analysis ------------------------------- #
+      - name: Restore cache from the build stage
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/go-build
+          key: go-${{ hashFiles('**/requirements.txt') }}
+
+      - name: Install cached dependencies
+        id: restore-dependencies
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: |
+          cd src
+          go get .
+
+      - name: Lint and Format code
+        id: lint
+        run: pre-commit run --all-files
