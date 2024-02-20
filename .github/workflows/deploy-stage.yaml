@@ -16,10 +16,37 @@ jobs:
     name: Commit Stage
     uses: ./.github/workflows/commit-stage.yaml
 
+  # ------------------------------- Integration Tests ------------------------------- #
+  integration_test:
+    runs-on: ubuntu-22.04
+    needs: commit_stage
+    name: Integration Test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore cache from the build stage
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/go-build
+          key: go-${{ hashFiles('**/go.sum') }}
+
+      - name: Install cached dependencies
+        id: restore-dependencies
+        run: |
+          cd src
+          go mod tidy
+
+      - name: Unit Testing with Golang testing package
+        id: unit_test
+        run: |
+          cd src
+          go test -tags=integration ./...
+
   # ------------------------------- Image Versioning ------------------------------- #
   publish:
     runs-on: ubuntu-22.04
-    needs: commit_stage
+    needs: integration_test
     name: Publish Image
     outputs:
       old_tag: ${{ steps.tagging.outputs.tag }}
