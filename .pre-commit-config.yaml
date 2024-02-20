@@ -12,7 +12,7 @@ repos:
 
 # Linters Runner for Go
 - repo: https://github.com/golangci/golangci-lint
-  rev: v1.54.0
+  rev: v1.56.2
   hooks:
-    - id: golangci-lint
+    - id: golangci-lint-full
       args: [src/api, src/services]
