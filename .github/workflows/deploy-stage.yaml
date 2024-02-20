@@ -36,7 +36,7 @@ jobs:
 
       - name: S2i build
         id: build-image
-        uses: redhat-action/s2i-build@v2
+        uses: redhat-actions/s2i-build@v2
         with:
           path_context: '.'
           builder_image: centos/go-toolset-7-centos7
