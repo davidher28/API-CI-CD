@@ -9,10 +9,3 @@ repos:
     - id: mixed-line-ending
       args: ["--fix=lf"]
     - id: trailing-whitespace
-
-# Linters Runner for Go
-- repo: https://github.com/golangci/golangci-lint
-  rev: v1.55.0
-  hooks:
-    - id: golangci-lint-full
-      args: [src/api, src/services, --verbose]
