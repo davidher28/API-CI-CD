@@ -37,7 +37,7 @@ jobs:
           cd src
           go mod tidy
 
-      - name: Unit Testing with Golang testing package
+      - name: Integration Testing with Golang httptest package
         id: unit_test
         run: |
           cd src
