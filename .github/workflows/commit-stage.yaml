@@ -104,4 +104,4 @@ jobs:
 
       - name: Lint and Format code
         id: lint
-        ses: pre-commit/action@v3.0.1
+        uses: pre-commit/action@v3.0.1
