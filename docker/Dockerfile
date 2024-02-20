@@ -1,10 +1,9 @@
 FROM golang:1.22.0-alpine
 
-WORKDIR /go/src
+WORKDIR /src
 
-COPY .. .
+COPY . .
 
-RUN cd src
 RUN go mod tidy
 RUN go build -v ./...
 
