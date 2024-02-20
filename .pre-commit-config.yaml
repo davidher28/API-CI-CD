@@ -10,9 +10,9 @@ repos:
       args: ["--fix=lf"]
     - id: trailing-whitespace
 
-# Golang hooks
+# Linters Runner for Go
 - repo: https://github.com/golangci/golangci-lint
-  rev: v1.56.2
+  rev: v1.56.0
   hooks:
     - id: golangci-lint
       args: [src/api, src/services]
