@@ -44,6 +44,7 @@ jobs:
         run: |
           cd src
           go get .
+          go mod tidy
 
       - name: Build
         id: build
@@ -71,6 +72,7 @@ jobs:
         run: |
           cd src
           go get .
+          go mod tidy
 
       - name: Unit Testing with Golang testing package
         id: unit_test
@@ -98,6 +100,7 @@ jobs:
         run: |
           cd src
           go get .
+          go mod tidy
 
       - name: Lint and Format code
         id: lint
