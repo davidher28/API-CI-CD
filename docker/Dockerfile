@@ -5,7 +5,7 @@ FROM golang:1.22.0
 WORKDIR /go/src
 
 # Copia el código fuente de tu aplicación al directorio de trabajo en el contenedor
-COPY . .
+COPY .. .
 
 # Compila la aplicación dentro del contenedor
 RUN go mod tidy
