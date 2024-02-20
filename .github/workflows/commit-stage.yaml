@@ -1,0 +1,104 @@
+name: Commit Stage
+run-name: Commit Stage - ${{ github.ref }}
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+  workflow_call:
+    # Allows for workflow reusability
+
+# Avoids running the same workflow concurrently on the same branch
+concurrency:
+  group: ${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    name: Build Application
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------- Project + Cache Setup ------------------------------- #
+      - name: Set up Go 1.20
+        id: setup-go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'src/go.mod'
+          cache-dependency-path: src/go.sum
+
+      - name: Set up cache
+        id: setup-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/go-build
+          key: go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            go-${{ hashFiles('**/go.sum') }}
+            go-
+
+      - name: Install dependencies
+        id: install-dependencies
+        run: |
+          cd src
+          go mod tidy
+
+      - name: Build
+        id: build
+        run: |
+          cd src
+          go build -v ./...
+
+  test:
+    runs-on: ubuntu-22.04
+    needs: build
+    name: Unit Test
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------- Unit Tests ------------------------------- #
+      - name: Restore cache from the build stage
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/go-build
+          key: go-${{ hashFiles('**/go.sum') }}
+
+      - name: Install cached dependencies
+        id: restore-dependencies
+        run: |
+          cd src
+          go mod tidy
+
+      - name: Unit Testing with Golang testing package
+        id: unit_test
+        run: |
+          cd src
+          go test ./...
+
+  analyze:
+    runs-on: ubuntu-22.04
+    needs: build
+    name: Static Analysis
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------- Static Analysis ------------------------------- #
+      - name: Restore cache from the build stage
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/go-build
+          key: go-${{ hashFiles('**/go.sum') }}
+
+      - name: Install cached dependencies
+        id: restore-dependencies
+        run: |
+          cd src
+          go mod tidy
+
+      - name: Lint and Format code
+        id: lint
+        uses: pre-commit/action@v3.0.1
