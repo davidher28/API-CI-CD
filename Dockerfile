@@ -2,13 +2,12 @@ FROM golang:1.22.0-alpine AS build
 
 WORKDIR /code
 
-COPY ./src/go.mod  /code/go.mod
-COPY ./src/go.sum  /code/go.sum
+COPY ./src/. /code/.
 
 RUN go mod tidy
-RUN go build -v -o /code/app ./...
+RUN go build -o /code/app
 
-FROM alpine:latest
+FROM alpine
 
 WORKDIR /code
 
