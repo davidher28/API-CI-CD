@@ -4,6 +4,7 @@ WORKDIR /go/src
 
 COPY .. .
 
+RUN cd src
 RUN go mod tidy
 RUN go build -v ./...
 
