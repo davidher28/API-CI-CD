@@ -1,0 +1,48 @@
+name: Commit Stage
+run-name: Commit Stage - ${{ github.ref }}
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+  workflow_call:
+    # Allows for workflow reusability
+
+# Avoids running the same workflow concurrently on the same branch
+concurrency:
+  group: ${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    name: Build Application
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------- Project + Cache Setup ------------------------------- #
+      - name: Set up Go 1.22.0
+        id: setup-go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.0'
+          cache-dependency-path: |
+            ./src/go.sum
+
+      - name: Set up cache
+        id: setup-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install dependencies
+        id: install-dependencies
+        run: |
+          go get .
+          go build -v ./...
