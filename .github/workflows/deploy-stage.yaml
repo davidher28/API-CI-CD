@@ -40,7 +40,7 @@ jobs:
         with:
           image: ${{ vars.DOCKERHUB_USERNAME }}/api
           tags: ${{ steps.tagging.outputs.new_tag }}
-          containerfiles: ./docker/Dockerfile
+          containerfiles: ./Dockerfile
 
       - name: Push To Docker Hub
         id: push-to-docker
