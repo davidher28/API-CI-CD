@@ -4,7 +4,7 @@ run-name: Deploy Stage - ${{ github.ref }}
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
   APP_NAME: hello-world
