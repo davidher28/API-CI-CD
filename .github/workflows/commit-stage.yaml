@@ -43,7 +43,6 @@ jobs:
         id: install-dependencies
         run: |
           cd src
-          go get .
           go mod tidy
 
       - name: Build
@@ -71,7 +70,6 @@ jobs:
         id: restore-dependencies
         run: |
           cd src
-          go get .
           go mod tidy
 
       - name: Unit Testing with Golang testing package
@@ -99,7 +97,6 @@ jobs:
         id: restore-dependencies
         run: |
           cd src
-          go get .
           go mod tidy
 
       - name: Lint and Format code
