@@ -120,4 +120,4 @@ jobs:
           retry_wait_seconds: 10
           max_attempts: 30
           warning_on_retry: false
-          command: curl -sSfL ${{ needs.deployment.outputs.route }}
+          command: curl -sSfL ${{ needs.deployment.outputs.route }}/hello
