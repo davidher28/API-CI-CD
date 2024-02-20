@@ -1,2 +1,0 @@
-name: Deploy Stage
-run-name: Deploy Stage - ${{ github.ref }}
