@@ -44,5 +44,5 @@ jobs:
       - name: Install dependencies
         id: install-dependencies
         run: |
-          go get .
+          go install .
           go build -v ./...
