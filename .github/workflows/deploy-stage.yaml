@@ -1,0 +1,124 @@
+name: Deploy Stage
+run-name: Deploy Stage - ${{ github.ref }}
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  APP_NAME: hello-world
+  OPENSHIFT_NAMESPACE: davidher28-dev
+
+jobs:
+  # ------------------------------- Commit Stage ------------------------------- #
+  commit_stage:
+    name: Commit Stage
+    uses: ./.github/workflows/commit-stage.yaml
+
+  # ------------------------------- Image Versioning ------------------------------- #
+  publish:
+    runs-on: ubuntu-22.04
+    needs: commit_stage
+    name: Publish Image
+    outputs:
+      old_tag: ${{ steps.tagging.outputs.tag }}
+      new_tag: ${{ steps.tagging.outputs.new_tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump Application Version
+        id: tagging
+        uses: anothrNick/github-tag-action@1.64.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+
+      - name: S2i build
+        id: build-image
+        uses: redhat-action/s2i-build@v2
+        with:
+          path_context: '.'
+          builder_image: centos/go-toolset-7-centos7
+          image: ${{ vars.DOCKERHUB_USERNAME }}/api
+          tags: ${{ steps.tagging.outputs.new_tag }}
+
+      - name: Push To Docker Hub
+        id: push-to-docker
+        uses: redhat-actions/push-to-registry@v2.7.1
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: docker.io
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Print image url
+        run: echo "Image pushed to ${{ steps.push-to-docker.outputs.registry-paths }}"
+
+  # ------------------------------- Red Hat OpenShift Blue/Green Deployment ------------------------------- #
+  deployment:
+    runs-on: ubuntu-22.04
+    needs: publish
+    name: Deploy Blue & Green Instances
+    outputs:
+      route: ${{ steps.expose-app.outputs.route }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to OpenShift
+        id: openshift-login
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+
+      - name: Deploy Blue Instance
+        id: deploy-blue
+        run: |
+          export BLUE_APP_NAME="${{ env.APP_NAME }}-blue"
+          export PREVIOUS_IMAGE="docker.io/${{ vars.DOCKERHUB_USERNAME }}/api:${{ needs.publish.outputs.old_tag }}"
+
+          oc delete all --selector="app=$BLUE_APP_NAME"
+          oc new-app "$PREVIOUS_IMAGE" --name="$BLUE_APP_NAME"
+
+      - name: Deploy Green Instance
+        id: deploy-green
+        run: |
+          export GREEN_APP_NAME="${{ env.APP_NAME }}-green"
+          export CURRENT_IMAGE="docker.io/${{ vars.DOCKERHUB_USERNAME }}/api:${{ needs.publish.outputs.new_tag }}"
+
+          oc delete all --selector="app=$GREEN_APP_NAME"
+          oc new-app "$CURRENT_IMAGE" --name="$GREEN_APP_NAME"
+
+      - name: Expose app
+        id: expose-app
+        run: |
+          export BLUE_APP_NAME="${{ env.APP_NAME }}-blue"
+          export GREEN_APP_NAME="${{ env.APP_NAME }}-green"
+
+          oc delete route ${{ env.APP_NAME }} --ignore-not-found=true
+          oc expose svc/$BLUE_APP_NAME --name=${{ env.APP_NAME }}
+          oc patch route/${{ env.APP_NAME }} -p '{"spec":{"to":{"name":"'"${GREEN_APP_NAME}"'"}}}'
+
+          export ROUTE="$(oc get route ${{ env.APP_NAME }} -o jsonpath='{.spec.host}')"
+          echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
+
+  deployment_test:
+    runs-on: ubuntu-22.04
+    needs: deployment
+    name: Deployment Test
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------- Deployment Test ------------------------------- #
+      - name: Test application deployment
+        id: test_deploy
+        uses: nick-fields/retry@v3
+        with:
+          timeout_seconds: 3
+          retry_wait_seconds: 10
+          max_attempts: 30
+          warning_on_retry: false
+          command: curl -sSfL ${{ needs.deployment.outputs.route }}
