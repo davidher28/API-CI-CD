@@ -14,5 +14,6 @@ func HelloWorldHandler(w http.ResponseWriter, _ *http.Request) {
 	jsonData := EncodeJSONResponse(response)
 
 	WriteJSONResponse(w, http.StatusOK, jsonData)
-	fmt.Printf("hello world was executed")
+
+	fmt.Printf("hello world was executed\n")
 }
