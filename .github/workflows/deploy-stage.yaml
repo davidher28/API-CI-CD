@@ -34,14 +34,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
 
-      - name: S2i build
+      - name: Buildah Build
         id: build-image
-        uses: redhat-actions/s2i-build@v2
+        uses: redhat-actions/buildah-build@v2.12
         with:
-          path_context: './src'
-          builder_image: centos/go-toolset-7-centos7
           image: ${{ vars.DOCKERHUB_USERNAME }}/api
           tags: ${{ steps.tagging.outputs.new_tag }}
+          containerfiles: ./docker/Dockerfile
 
       - name: Push To Docker Hub
         id: push-to-docker
