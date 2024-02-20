@@ -68,7 +68,6 @@ jobs:
 
       - name: Install cached dependencies
         id: restore-dependencies
-        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
           cd src
           go get .
@@ -96,7 +95,6 @@ jobs:
 
       - name: Install cached dependencies
         id: restore-dependencies
-        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
           cd src
           go get .
