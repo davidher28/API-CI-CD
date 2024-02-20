@@ -60,13 +60,6 @@ jobs:
           path: ~/.cache/go-build
           key: go-${{ hashFiles('**/requirements.txt') }}
 
-      - name: Install cached dependencies
-        id: restore-dependencies
-        if: steps.restore-cache.outputs.cache-hit != 'true'
-        run: |
-          cd src
-          go build
-
       - name: Unit Testing with Golang testing package
         id: unit_test
         run: |
