@@ -16,7 +16,7 @@ func TestHelloWorldIntegration(t *testing.T) {
 	expected := `{"message":"` + services.HelloWorld() + `"}`
 
 	// Act
-	request, _ := http.NewRequest("GET", "/hello", nil)
+	request, _ := http.NewRequest("GET", "/", nil)
 	requestRecord := httptest.NewRecorder()
 	handler := http.HandlerFunc(HelloWorldHandler)
 	handler.ServeHTTP(requestRecord, request)
