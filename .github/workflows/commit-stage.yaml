@@ -44,3 +44,31 @@ jobs:
         run: |
           cd src
           go build
+
+  test:
+    runs-on: ubuntu-22.04
+    needs: build
+    name: Unit Test
+    steps:
+      - uses: actions/checkout@v4
+
+      # ------------------------------- Unit Tests ------------------------------- #
+      - name: Restore cache from the build stage
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/go-build
+          key: go-${{ hashFiles('**/requirements.txt') }}
+
+      - name: Install cached dependencies
+        id: restore-dependencies
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: |
+          cd src
+          go build
+
+      - name: Unit Testing with Golang testing package
+        id: unit_test
+        run: |
+          cd src
+          go test -v ./...
