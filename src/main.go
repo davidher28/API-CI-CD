@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/hello", api.HelloWorldHandler)
+	http.HandleFunc("/", api.HelloWorldHandler)
 
 	errorStatus := http.ListenAndServe(":8080", nil)
 	if errorStatus != nil {
