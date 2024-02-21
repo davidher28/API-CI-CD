@@ -26,7 +26,7 @@ jobs:
         id: setup-go
         uses: actions/setup-go@v5
         with:
-          go-version-file: 'src/go.mod'
+          go-version-file: src/go.mod
           cache-dependency-path: src/go.sum
 
       - name: Set up cache
@@ -41,15 +41,13 @@ jobs:
 
       - name: Install dependencies
         id: install-dependencies
-        run: |
-          cd src
-          go mod tidy
+        working-directory: src
+        run: go mod tidy
 
-      - name: Build
+      - name: Build Go Application
         id: build
-        run: |
-          cd src
-          go build -v ./...
+        working-directory: src
+        run: go build -v ./...
 
   test:
     runs-on: ubuntu-22.04
@@ -68,15 +66,13 @@ jobs:
 
       - name: Install cached dependencies
         id: restore-dependencies
-        run: |
-          cd src
-          go mod tidy
+        working-directory: src
+        run: go mod tidy
 
       - name: Unit Testing with Golang testing package
         id: unit_test
-        run: |
-          cd src
-          go test ./...
+        working-directory: src
+        run: go test ./... -v
 
   analyze:
     runs-on: ubuntu-22.04
@@ -95,10 +91,14 @@ jobs:
 
       - name: Install cached dependencies
         id: restore-dependencies
-        run: |
-          cd src
-          go mod tidy
+        working-directory: src
+        run: go mod tidy
 
       - name: Lint and Format code
         id: lint
-        uses: pre-commit/action@v3.0.1
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.55.0
+          args: --verbose
+          working-directory: src
+          skip-pkg-cache: true
