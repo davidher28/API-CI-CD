@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
-      - name: Set up Go 1.20
+      - name: Set up Go 1.17
         id: setup-go
         uses: actions/setup-go@v5
         with:
