@@ -96,7 +96,8 @@ jobs:
 
       - name: Lint and Format code
         id: lint
-        run: |
-          pip install pre-commit
-          rm -rf ~/.cache/pre-commit
-          pre-commit run --all-files
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.55.0
+          args: -v
+          working-directory: src
