@@ -23,7 +23,7 @@ jobs:
 
       - name: Print Tag
         run: |
-          export TAG=$(git describe --tags --always --abbrev=0)
+          export TAG=$(git describe --tags --always)
           echo $TAG
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
