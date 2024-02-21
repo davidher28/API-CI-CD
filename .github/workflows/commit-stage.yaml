@@ -23,8 +23,8 @@ jobs:
 
       - name: Print Tag
         run: |
-          git fetch --tags
-          echo $(git describe --tags --always --abbrev=0)
+          export TAG=$(git describe --tags --always --abbrev=0)
+          echo $TAG
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
