@@ -21,12 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Print Tag
-        run: |
-          git fetch --prune --unshallow
-          latest_tag=$(git describe --tags --abbrev=0 HEAD~)
-          echo "Latest Tag: $latest_tag"
-
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
         id: setup-go
