@@ -23,7 +23,7 @@ jobs:
 
       - name: Print Tag
         run: |
-          echo $(git describe --tags --always `git rev-list --tags --max-count=1`)
+          echo $(git describe --tags --always --abbrev=0 HEAD~)
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
