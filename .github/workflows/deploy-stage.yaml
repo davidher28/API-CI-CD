@@ -52,7 +52,7 @@ jobs:
 
       - name: Determine the previous tag
         id: get-previous-tag
-        run: echo "old_tag=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_OUTPUT
+        run: echo "old_tag=${GITHUB_REF#refs/*/}" >> "$GITHUB_OUTPUT"
 
       - name: Bump Application Version
         id: tagging

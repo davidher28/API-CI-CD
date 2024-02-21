@@ -23,8 +23,7 @@ jobs:
 
       - name: Print Tag
         run: |
-          export TAG=$(git describe --tags --always)
-          echo $TAG
+          echo ${{ github.ref_name }}
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
