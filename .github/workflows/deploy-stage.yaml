@@ -99,30 +99,25 @@ jobs:
       - name: Deploy Blue Instance
         id: deploy-blue
         run: |
-          export BLUE_APP_NAME="${{ vars.BLUE_APP_NAME }}"
           export PREVIOUS_IMAGE="docker.io/${{ vars.DOCKERHUB_USERNAME }}/api:${{ needs.publish.outputs.old_tag }}"
 
-          oc delete all --selector="app=$BLUE_APP_NAME"
-          oc new-app "$PREVIOUS_IMAGE" --name="$BLUE_APP_NAME"
+          oc delete all --selector="app=${{ vars.BLUE_APP_NAME }}"
+          oc new-app "$PREVIOUS_IMAGE" --name="${{ vars.BLUE_APP_NAME }}"
 
       - name: Deploy Green Instance
         id: deploy-green
         run: |
-          export GREEN_APP_NAME="${{ vars.GREEN_APP_NAME }}"
           export CURRENT_IMAGE="docker.io/${{ vars.DOCKERHUB_USERNAME }}/api:${{ needs.publish.outputs.new_tag }}"
 
-          oc delete all --selector="app=$GREEN_APP_NAME"
-          oc new-app "$CURRENT_IMAGE" --name="$GREEN_APP_NAME"
+          oc delete all --selector="app=${{ vars.GREEN_APP_NAME }}"
+          oc new-app "$CURRENT_IMAGE" --name="${{ vars.GREEN_APP_NAME }}"
 
       - name: Expose app
         id: expose-app
         run: |
-          export BLUE_APP_NAME="${{ vars.BLUE_APP_NAME }}"
-          export GREEN_APP_NAME="${{ vars.GREEN_APP_NAME }}"
-
           oc delete route ${{ vars.APP_NAME }} --ignore-not-found=true
-          oc expose svc/$BLUE_APP_NAME --name=${{ vars.APP_NAME }}
-          oc patch route/${{ vars.APP_NAME }} -p '{"spec":{"to":{"name":"'"${GREEN_APP_NAME}"'"}}}'
+          oc expose svc/${{ vars.BLUE_APP_NAME }} --name=${{ vars.APP_NAME }}
+          oc patch route/${{ vars.APP_NAME }} -p '{"spec":{"to":{"name":"'"${{ vars.GREEN_APP_NAME }}"'"}}}'
 
           export ROUTE="$(oc get route ${{ vars.APP_NAME }} -o jsonpath='{.spec.host}')"
           echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
