@@ -21,6 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+      - name: Use tag
+        run: echo ${{steps.tag.outputs.tag}}
+
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
         id: setup-go

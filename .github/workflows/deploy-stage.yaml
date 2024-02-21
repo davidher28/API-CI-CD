@@ -45,16 +45,14 @@ jobs:
     needs: integration_test
     name: Publish Image
     outputs:
-      old_tag: ${{ steps.get-previous-tag.outputs.old_tag }}
+      old_tag: ${{ steps.get-current-tag.outputs.tag }}
       new_tag: ${{ steps.tagging.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Determine the previous tag
-        id: get-previous-tag
-        run: |
-          export PREVIOUS_TAG=$(git describe --tags --abbrev=0)
-          echo "old_tag=$PREVIOUS_TAG" >> "$GITHUB_OUTPUT"
+      - name: Determine the current tag
+        id: get-current-tag
+        uses: dawidd6/action-get-tag@v1
 
       - name: Bump Application Version
         id: tagging
