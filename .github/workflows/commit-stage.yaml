@@ -45,7 +45,7 @@ jobs:
           cd src
           go mod tidy
 
-      - name: Build
+      - name: Build Go Application
         id: build
         run: |
           cd src
@@ -104,3 +104,4 @@ jobs:
         uses: golangci/golangci-lint-action@v2.0.0
         with:
           version: v1.55
+          args: src/...
