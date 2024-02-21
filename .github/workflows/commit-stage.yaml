@@ -102,3 +102,5 @@ jobs:
       - name: Lint and Format code
         id: lint
         uses: golangci/golangci-lint-action@v2.0.0
+        with:
+          version: v1.55.0
