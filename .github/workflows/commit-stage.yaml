@@ -24,6 +24,7 @@ jobs:
       - name: Print Tag
         run: |
           echo ${{ github.ref_name }}
+          echo $(git tag | sort --version-sort | tail -n1)
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
