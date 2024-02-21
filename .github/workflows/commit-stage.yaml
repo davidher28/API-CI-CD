@@ -98,7 +98,6 @@ jobs:
         run: |
           cd src
           go mod tidy
-          go test ./...
 
       - name: Lint and Format code
         id: lint

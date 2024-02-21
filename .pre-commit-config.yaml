@@ -15,4 +15,4 @@ repos:
   rev: v1.55.0
   hooks:
     - id: golangci-lint-full
-      args: ["src"]
+      args: ["src", "--verbose"]
