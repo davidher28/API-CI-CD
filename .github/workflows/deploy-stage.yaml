@@ -50,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Determine the curren tag
+      - name: Determine the current tag
         id: get-current-tag
         run: |
           git fetch --prune --unshallow
