@@ -24,7 +24,7 @@ jobs:
       - name: Print Tag
         run: |
           git fetch --tags
-          echo $(git describe --tags --abbrev=0)
+          echo $(git describe --tags --always --abbrev=0)
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
