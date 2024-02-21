@@ -4,7 +4,7 @@ run-name: Deploy Stage - ${{ github.ref }}
 on:
   push:
     branches:
-      - master
+      - testDeploy
 
 jobs:
   # ------------------------------- Commit Stage ------------------------------- #
@@ -127,6 +127,10 @@ jobs:
 
           export ROUTE="$(oc get route ${{ vars.APP_NAME }} -o jsonpath='{.spec.host}')"
           echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
+
+
+      - name: Bash
+        run: echo steps.stagging.outputs.old_tag
 
   deployment_test:
     runs-on: ubuntu-22.04
