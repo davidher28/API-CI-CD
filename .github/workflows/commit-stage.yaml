@@ -105,3 +105,4 @@ jobs:
         with:
           version: v1.55
           args: ./src/...
+          skip-pkg-cache: true
