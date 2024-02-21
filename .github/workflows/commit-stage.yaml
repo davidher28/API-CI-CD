@@ -23,8 +23,7 @@ jobs:
 
       - name: Print Tag
         run: |
-          echo ${{ github.ref_name }}
-          echo $(git tag | sort --version-sort | tail -n1)
+          echo $(git describe --tags --always `git rev-list --tags --max-count=1`)
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
