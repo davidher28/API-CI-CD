@@ -41,15 +41,13 @@ jobs:
 
       - name: Install dependencies
         id: install-dependencies
-        run: |
-          cd src
-          go mod tidy
+        working-directory: src
+        run: go mod tidy
 
-      - name: Build
+      - name: Build Go Application
         id: build
-        run: |
-          cd src
-          go build -v ./...
+        working-directory: src
+        run: go build -v ./...
 
   test:
     runs-on: ubuntu-22.04
@@ -68,15 +66,13 @@ jobs:
 
       - name: Install cached dependencies
         id: restore-dependencies
-        run: |
-          cd src
-          go mod tidy
+        working-directory: src
+        run: go mod tidy
 
       - name: Unit Testing with Golang testing package
         id: unit_test
-        run: |
-          cd src
-          go test ./... -v
+        working-directory: src
+        run: go test ./... -v
 
   analyze:
     runs-on: ubuntu-22.04
@@ -95,13 +91,12 @@ jobs:
 
       - name: Install cached dependencies
         id: restore-dependencies
-        run: |
-          cd src
-          go mod tidy
+        working-directory: src
+        run: go mod tidy
 
       - name: Lint and Format code
-        working-directory: src
         id: lint
+        working-directory: src
         run: |
           pip install pre-commit
           pre-commit run --all-files
