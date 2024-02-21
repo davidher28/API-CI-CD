@@ -12,7 +12,7 @@ repos:
 
 # Golang hooks
 - repo: https://github.com/golangci/golangci-lint
-  rev: v1.56.2
+  rev: v1.55.0
   hooks:
     - id: golangci-lint
       args: [src/api, src/services]
