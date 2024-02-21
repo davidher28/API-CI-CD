@@ -102,4 +102,6 @@ jobs:
       - name: Lint and Format code
         working-directory: src
         id: lint
-        uses: pre-commit/action@v3.0.1
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files
