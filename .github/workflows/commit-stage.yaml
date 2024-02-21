@@ -45,7 +45,7 @@ jobs:
           cd src
           go mod tidy
 
-      - name: Build Go Application
+      - name: Build
         id: build
         run: |
           cd src
@@ -101,9 +101,5 @@ jobs:
 
       - name: Lint and Format code
         id: lint
-        uses: golangci/golangci-lint-action@v2.0.0
-        with:
-          version: v1.55
-          working-directory: src
-          args: -v
-          skip-pkg-cache: true
+        uses: pre-commit/action@v3.0.1
+        working-directory: src
