@@ -23,7 +23,9 @@ jobs:
 
       - name: Print Tag
         run: |
-          echo $(git describe --tags --always --abbrev=0 HEAD~)
+          git fetch --prune --unshallow
+          latest_tag=$(git describe --tags --abbrev=0 HEAD~)
+          echo "Latest Tag: $latest_tag"
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
