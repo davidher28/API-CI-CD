@@ -21,8 +21,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use tag
-        run: echo ${GITHUB_REF#refs/*/}
+      - name: Print Tag
+        run: echo $(git describe --tags --abbrev=0)
 
       # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
