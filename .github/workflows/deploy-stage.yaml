@@ -29,15 +29,13 @@ jobs:
 
       - name: Install cached dependencies
         id: restore-dependencies
-        run: |
-          cd src
-          go mod tidy
+        working-directory: src
+        run: go mod tidy
 
       - name: Integration Testing with Golang httptest package
-        id: unit_test
-        run: |
-          cd src
-          go test -tags=integration ./... -v
+        id: integration_test
+        working-directory: src
+        run: go test -tags=integration ./... -v
 
   # ------------------------------- Image Versioning ------------------------------- #
   publish:
