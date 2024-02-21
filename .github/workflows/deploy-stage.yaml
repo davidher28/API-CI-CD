@@ -45,10 +45,14 @@ jobs:
     needs: integration_test
     name: Publish Image
     outputs:
-      old_tag: ${{ steps.tagging.outputs.tag }}
+      old_tag: ${{ steps.get-previous-tag.outputs.old_tag }}
       new_tag: ${{ steps.tagging.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Determine the previous tag
+        id: get-previous-tag
+        run: echo "old_tag=${GITHUB_REF#refs/*/}" >> "$GITHUB_OUTPUT"
 
       - name: Bump Application Version
         id: tagging
