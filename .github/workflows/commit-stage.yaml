@@ -96,7 +96,7 @@ jobs:
 
       - name: Lint and Format code
         id: lint
-        working-directory: src
         run: |
           pip install pre-commit
+          rm -rf ~/.cache/pre-commit
           pre-commit run --all-files
