@@ -6,10 +6,6 @@ on:
     branches:
       - master
 
-env:
-  APP_NAME: hello-world
-  OPENSHIFT_NAMESPACE: davidher28-dev
-
 jobs:
   # ------------------------------- Commit Stage ------------------------------- #
   commit_stage:
@@ -98,12 +94,12 @@ jobs:
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
 
       - name: Deploy Blue Instance
         id: deploy-blue
         run: |
-          export BLUE_APP_NAME="${{ env.APP_NAME }}-blue"
+          export BLUE_APP_NAME="${{ vars.BLUE_APP_NAME }}"
           export PREVIOUS_IMAGE="docker.io/${{ vars.DOCKERHUB_USERNAME }}/api:${{ needs.publish.outputs.old_tag }}"
 
           oc delete all --selector="app=$BLUE_APP_NAME"
@@ -112,7 +108,7 @@ jobs:
       - name: Deploy Green Instance
         id: deploy-green
         run: |
-          export GREEN_APP_NAME="${{ env.APP_NAME }}-green"
+          export GREEN_APP_NAME="${{ vars.GREEN_APP_NAME }}"
           export CURRENT_IMAGE="docker.io/${{ vars.DOCKERHUB_USERNAME }}/api:${{ needs.publish.outputs.new_tag }}"
 
           oc delete all --selector="app=$GREEN_APP_NAME"
@@ -121,14 +117,14 @@ jobs:
       - name: Expose app
         id: expose-app
         run: |
-          export BLUE_APP_NAME="${{ env.APP_NAME }}-blue"
-          export GREEN_APP_NAME="${{ env.APP_NAME }}-green"
+          export BLUE_APP_NAME="${{ vars.BLUE_APP_NAME }}"
+          export GREEN_APP_NAME="${{ vars.GREEN_APP_NAME }}"
 
-          oc delete route ${{ env.APP_NAME }} --ignore-not-found=true
-          oc expose svc/$BLUE_APP_NAME --name=${{ env.APP_NAME }}
-          oc patch route/${{ env.APP_NAME }} -p '{"spec":{"to":{"name":"'"${GREEN_APP_NAME}"'"}}}'
+          oc delete route ${{ vars.APP_NAME }} --ignore-not-found=true
+          oc expose svc/$BLUE_APP_NAME --name=${{ vars.APP_NAME }}
+          oc patch route/${{ vars.APP_NAME }} -p '{"spec":{"to":{"name":"'"${GREEN_APP_NAME}"'"}}}'
 
-          export ROUTE="$(oc get route ${{ env.APP_NAME }} -o jsonpath='{.spec.host}')"
+          export ROUTE="$(oc get route ${{ vars.APP_NAME }} -o jsonpath='{.spec.host}')"
           echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
 
   deployment_test:
