@@ -76,7 +76,7 @@ jobs:
         id: unit_test
         run: |
           cd src
-          go test ./...
+          go test ./... -v
 
   analyze:
     runs-on: ubuntu-22.04

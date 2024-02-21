@@ -37,7 +37,7 @@ jobs:
         id: unit_test
         run: |
           cd src
-          go test -tags=integration ./...
+          go test -tags=integration ./... -v
 
   # ------------------------------- Image Versioning ------------------------------- #
   publish:
