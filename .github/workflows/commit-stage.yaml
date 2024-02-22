@@ -84,15 +84,7 @@ jobs:
       # ------------------------------- Static Analysis ------------------------------- #
       - name: Restore Cache from the Build Stage
         id: restore-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ~/.cache/go-build
-          key: go-${{ hashFiles('**/go.sum') }}
-
-      - name: Install Cached Dependencies
-        id: restore-dependencies
-        working-directory: src
-        run: go mod tidy
+        uses: actions/setup-go@v5
 
       - name: Lint and Format Go Code
         id: lint
