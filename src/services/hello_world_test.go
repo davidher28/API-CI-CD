@@ -10,7 +10,7 @@ import (
 
 func TestHelloWorld(t *testing.T) {
 	// Arrange
-	expected := "Hello, world!"
+	expected := "Hello world Claudia and David :)"
 
 	// Act
 	result := HelloWorld()
