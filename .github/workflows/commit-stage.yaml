@@ -96,7 +96,7 @@ jobs:
 
       - name: Lint and Format Go Code
         id: lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v4
         with:
           version: v1.55.0
           args: --verbose
