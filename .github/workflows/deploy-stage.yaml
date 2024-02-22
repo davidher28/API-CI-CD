@@ -20,19 +20,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Restore cache from the build stage
+      - name: Restore Cache from the Build Stage
         id: restore-cache
         uses: actions/cache/restore@v4
         with:
           path: ~/.cache/go-build
           key: go-${{ hashFiles('**/go.sum') }}
 
-      - name: Install cached dependencies
+      - name: Install Cached Dependencies
         id: restore-dependencies
         working-directory: src
         run: go mod tidy
 
-      - name: Integration Testing with Golang httptest package
+      - name: Integration Testing with Golang 'httptest' Package
         id: integration_test
         working-directory: src
         run: go test -tags=integration ./... -v
@@ -43,13 +43,13 @@ jobs:
     needs: integration_test
     name: Publish Image
     outputs:
-      old_tag: ${{ steps.get-current-tag.outputs.old_tag }}
+      old_tag: ${{ steps.current-tag.outputs.old_tag }}
       new_tag: ${{ steps.tagging.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Determine the current tag
-        id: get-current-tag
+      - name: Determine Current Tag
+        id: current-tag
         run: |
           git fetch --prune --unshallow
           CURRENT_TAG=$(git describe --tags --abbrev=0 HEAD~)
@@ -80,7 +80,7 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Print image url
+      - name: Display Container Path
         run: echo "Image pushed to ${{ steps.push-to-docker.outputs.registry-paths }}"
 
   # ------------------------------- Red Hat OpenShift Blue/Green Deployment ------------------------------- #
@@ -93,7 +93,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Log in to OpenShift
+      - name: Log In to OpenShift
         id: openshift-login
         uses: redhat-actions/oc-login@v1.2
         with:
@@ -117,7 +117,7 @@ jobs:
           oc delete all --selector="app=${{ vars.GREEN_APP_NAME }}"
           oc new-app "$CURRENT_IMAGE" --name="${{ vars.GREEN_APP_NAME }}"
 
-      - name: Expose app
+      - name: Expose K8s Green Instance
         id: expose-app
         run: |
           oc delete route ${{ vars.APP_NAME }} --ignore-not-found=true
