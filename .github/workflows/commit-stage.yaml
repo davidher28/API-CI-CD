@@ -54,11 +54,6 @@ jobs:
           go-version-file: src/go.mod
           cache-dependency-path: src/go.sum
 
-      - name: Install Cached Dependencies
-        id: restore-dependencies
-        working-directory: src
-        run: go mod tidy
-
       - name: Unit Testing with Golang 'testing' Package
         id: unit_test
         working-directory: src

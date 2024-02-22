@@ -22,15 +22,10 @@ jobs:
 
       - name: Restore Cache from the Build Stage
         id: restore-cache
-        uses: actions/cache/restore@v4
+        uses: actions/setup-go@v5
         with:
-          path: ~/.cache/go-build
-          key: go-${{ hashFiles('**/go.sum') }}
-
-      - name: Install Cached Dependencies
-        id: restore-dependencies
-        working-directory: src
-        run: go mod tidy
+          go-version-file: src/go.mod
+          cache-dependency-path: src/go.sum
 
       - name: Integration Testing with Golang 'httptest' Package
         id: integration_test
