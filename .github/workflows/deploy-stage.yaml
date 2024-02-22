@@ -137,8 +137,7 @@ jobs:
         id: expose-app
         run: |
           oc delete route ${{ vars.APP_NAME }} --ignore-not-found=true
-          oc expose svc/${{ vars.BLUE_APP_NAME }} --name=${{ vars.APP_NAME }}
-          oc patch route/${{ vars.APP_NAME }} -p '{"spec":{"to":{"name":"'"${{ vars.GREEN_APP_NAME }}"'"}}}'
+          oc expose svc/${{ vars.GREEN_APP_NAME }} --name=${{ vars.APP_NAME }}
 
           export ROUTE="$(oc get route ${{ vars.APP_NAME }} -o jsonpath='{.spec.host}')"
           echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
