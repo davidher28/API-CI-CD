@@ -15,13 +15,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ------------------------------- Application + Cache Setup ------------------------------- #
   build:
     runs-on: ubuntu-22.04
     name: Build Application
     steps:
       - uses: actions/checkout@v4
 
-      # ------------------------------- Project + Cache Setup ------------------------------- #
       - name: Set up Go 1.20
         id: setup-go
         uses: actions/setup-go@v5
@@ -34,6 +34,7 @@ jobs:
         working-directory: src
         run: go build -v ./...
 
+  # ------------------------------- Unit Tests ------------------------------- #
   test:
     runs-on: ubuntu-22.04
     needs: build
@@ -41,7 +42,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ------------------------------- Unit Tests ------------------------------- #
       - name: Restore Cache from the Build Stage
         id: restore-cache
         uses: actions/setup-go@v5
@@ -54,6 +54,7 @@ jobs:
         working-directory: src
         run: go test ./... -v
 
+  # ------------------------------- Static Analysis ------------------------------- #
   analyze:
     runs-on: ubuntu-22.04
     needs: build
@@ -61,7 +62,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ------------------------------- Static Analysis ------------------------------- #
       - name: Restore Cache from the Build Stage
         id: restore-cache
         uses: actions/setup-go@v5
