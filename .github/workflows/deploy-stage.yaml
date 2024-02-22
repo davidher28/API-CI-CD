@@ -83,13 +83,11 @@ jobs:
       - name: Display Container Path
         run: echo "Image pushed to ${{ steps.push-to-docker.outputs.registry-paths }}"
 
-  # ------------------------------- Red Hat OpenShift Blue/Green Deployment ------------------------------- #
-  deployment:
+  # ------------------------------- Red Hat OpenShift Blue Deployment ------------------------------- #
+  blue_deployment:
     runs-on: ubuntu-22.04
     needs: publish
-    name: Deploy Blue & Green Instances
-    outputs:
-      route: ${{ steps.expose-app.outputs.route }}
+    name: Blue Deployment
     steps:
       - uses: actions/checkout@v4
 
@@ -108,6 +106,24 @@ jobs:
 
           oc delete all --selector="app=${{ vars.BLUE_APP_NAME }}"
           oc new-app "$PREVIOUS_IMAGE" --name="${{ vars.BLUE_APP_NAME }}"
+
+  # ------------------------------- Red Hat OpenShift Green Deployment ------------------------------- #
+  green_deployment:
+    runs-on: ubuntu-22.04
+    needs: publish
+    name: Green Deployment
+    outputs:
+      route: ${{ steps.expose-app.outputs.route }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log In to OpenShift
+        id: openshift-login
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
 
       - name: Deploy Green Instance
         id: deploy-green
@@ -129,7 +145,7 @@ jobs:
 
   deployment_test:
     runs-on: ubuntu-22.04
-    needs: deployment
+    needs: [blue_deployment, green_deployment]
     name: Deployment Test
     steps:
       - uses: actions/checkout@v4
