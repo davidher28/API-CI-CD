@@ -29,16 +29,6 @@ jobs:
           go-version-file: src/go.mod
           cache-dependency-path: src/go.sum
 
-      - name: Set up Cache
-        id: setup-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/go-build
-          key: go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            go-${{ hashFiles('**/go.sum') }}
-            go-
-
       - name: Install Dependencies
         id: install-dependencies
         working-directory: src
@@ -59,10 +49,10 @@ jobs:
       # ------------------------------- Unit Tests ------------------------------- #
       - name: Restore Cache from the Build Stage
         id: restore-cache
-        uses: actions/cache/restore@v4
+        uses: actions/setup-go@v5
         with:
-          path: ~/.cache/go-build
-          key: go-${{ hashFiles('**/go.sum') }}
+          go-version-file: src/go.mod
+          cache-dependency-path: src/go.sum
 
       - name: Install Cached Dependencies
         id: restore-dependencies
