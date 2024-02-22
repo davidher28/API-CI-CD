@@ -87,7 +87,7 @@ jobs:
   blue_deployment:
     runs-on: ubuntu-22.04
     needs: publish
-    name: Blue Deployment
+    name: OpenShift Blue Deployment
     steps:
       - uses: actions/checkout@v4
 
@@ -111,7 +111,7 @@ jobs:
   green_deployment:
     runs-on: ubuntu-22.04
     needs: publish
-    name: Green Deployment
+    name: OpenShift Green Deployment
     outputs:
       route: ${{ steps.expose-app.outputs.route }}
     steps:
