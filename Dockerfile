@@ -2,8 +2,8 @@ FROM golang:1.22.0-alpine AS build
 
 WORKDIR /code
 
-COPY ./src/go.sum /code/go.sum
 COPY ./src/go.mod /code/go.mod
+COPY ./src/go.sum /code/go.sum
 RUN go mod tidy
 
 COPY ./src /code
