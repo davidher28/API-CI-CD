@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	// Testing
 	http.HandleFunc("/", api.HelloWorldHandler)
 
 	errorStatus := http.ListenAndServe(":8080", nil)
