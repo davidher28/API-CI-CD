@@ -84,8 +84,10 @@ jobs:
       # ------------------------------- Static Analysis ------------------------------- #
       - name: Restore Cache from the Build Stage
         id: restore-cache
-        working-directory: src
         uses: actions/setup-go@v5
+        with:
+          go-version-file: src/go.mod
+          cache-dependency-path: src/go.sum
 
       - name: Lint and Format Go Code
         id: lint
