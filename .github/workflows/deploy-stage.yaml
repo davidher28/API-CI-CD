@@ -133,7 +133,7 @@ jobs:
           oc delete all --selector="app=${{ vars.GREEN_APP_NAME }}"
           oc new-app "$CURRENT_IMAGE" --name="${{ vars.GREEN_APP_NAME }}"
 
-      - name: Expose K8s Green Instance
+      - name: Expose Green Instance
         id: expose-app
         run: |
           oc delete route ${{ vars.APP_NAME }} --ignore-not-found=true
