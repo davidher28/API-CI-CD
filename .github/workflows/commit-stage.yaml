@@ -59,7 +59,15 @@ jobs:
       # ------------------------------- Unit Tests ------------------------------- #
       - name: Restore Cache from the Build Stage
         id: restore-cache
-        uses: actions/setup-go@v5
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/go-build
+          key: go-${{ hashFiles('**/go.sum') }}
+
+      - name: Install Cached Dependencies
+        id: restore-dependencies
+        working-directory: src
+        run: go mod tidy
 
       - name: Unit Testing with Golang 'testing' Package
         id: unit_test
