@@ -32,11 +32,11 @@ jobs:
         working-directory: src
         run: go test -tags=integration ./... -v
 
-  # ------------------------------- Image Versioning ------------------------------- #
+  # ------------------------------- Container Versioning ------------------------------- #
   publish:
     runs-on: ubuntu-22.04
     needs: integration_test
-    name: Publish Image
+    name: Publish Container
     outputs:
       old_tag: ${{ steps.current-tag.outputs.old_tag }}
       new_tag: ${{ steps.tagging.outputs.new_tag }}
@@ -137,6 +137,7 @@ jobs:
           export ROUTE="$(oc get route ${{ vars.APP_NAME }} -o jsonpath='{.spec.host}')"
           echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
 
+  # ------------------------------- Deployment Test ------------------------------- #
   deployment_test:
     runs-on: ubuntu-22.04
     needs: [blue_deployment, green_deployment]
@@ -144,7 +145,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ------------------------------- Deployment Test ------------------------------- #
       - name: Test application deployment
         id: test_deploy
         uses: nick-fields/retry@v3
