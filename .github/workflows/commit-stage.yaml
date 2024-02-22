@@ -29,7 +29,7 @@ jobs:
           go-version-file: src/go.mod
           cache-dependency-path: src/go.sum
 
-      - name: Set up cache
+      - name: Set up Cache
         id: setup-cache
         uses: actions/cache@v4
         with:
@@ -39,7 +39,7 @@ jobs:
             go-${{ hashFiles('**/go.sum') }}
             go-
 
-      - name: Install dependencies
+      - name: Install Dependencies
         id: install-dependencies
         working-directory: src
         run: go mod tidy
@@ -57,19 +57,19 @@ jobs:
       - uses: actions/checkout@v4
 
       # ------------------------------- Unit Tests ------------------------------- #
-      - name: Restore cache from the build stage
+      - name: Restore Cache from the Build Stage
         id: restore-cache
         uses: actions/cache/restore@v4
         with:
           path: ~/.cache/go-build
           key: go-${{ hashFiles('**/go.sum') }}
 
-      - name: Install cached dependencies
+      - name: Install Cached Dependencies
         id: restore-dependencies
         working-directory: src
         run: go mod tidy
 
-      - name: Unit Testing with Golang testing package
+      - name: Unit Testing with Golang 'testing' Package
         id: unit_test
         working-directory: src
         run: go test ./... -v
@@ -82,23 +82,22 @@ jobs:
       - uses: actions/checkout@v4
 
       # ------------------------------- Static Analysis ------------------------------- #
-      - name: Restore cache from the build stage
+      - name: Restore Cache from the Build Stage
         id: restore-cache
         uses: actions/cache/restore@v4
         with:
           path: ~/.cache/go-build
           key: go-${{ hashFiles('**/go.sum') }}
 
-      - name: Install cached dependencies
+      - name: Install Cached Dependencies
         id: restore-dependencies
         working-directory: src
         run: go mod tidy
 
-      - name: Lint and Format code
+      - name: Lint and Format Go Code
         id: lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v4
         with:
           version: v1.55.0
           args: --verbose
           working-directory: src
-          skip-pkg-cache: true
